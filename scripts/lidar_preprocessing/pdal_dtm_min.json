@@ -1,0 +1,30 @@
+{
+    "description": "DTM pipeline - min return, 0.5 m (tested, not used). Input: Z:\\Herl_s3482170\\data\\raw\\lidar_tiles\\C_34FN2.LAZ. Output: Z:\\Herl_s3482170\\data\\processed\\lidar\\dtm\\dtm_#_resol.tif",
+    "pipeline": [
+        "Z:\\Herl_s3482170\\data\\raw\\lidar_tiles\\C_34FN2.LAZ",
+        {
+            "type": "filters.reprojection",
+            "in_srs": "EPSG:28992",
+            "out_srs": "EPSG:28992"
+        },
+        {
+            "type": "filters.splitter",
+            "length": 1000
+        },
+        {
+            "type": "filters.range",
+            "limits": "Classification[2:2]"
+        },
+        {
+            "type": "filters.outlier"
+        },
+        {
+            "type": "writers.gdal",
+            "filename": "Z:\\Herl_s3482170\\data\\processed\\lidar\\dtm\\dtm_#_resol.tif",
+            "output_type": "min",
+            "gdaldriver": "GTiff",
+            "resolution": 0.5,
+            "nodata": -9999
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+# =============================================================================
+# Python dependencies
+# Urban Allergenic Tree Species Mapping — Enschede
+# MSc Spatial Engineering, ITC, University of Twente, 2025-2026
+#
+# Computational environment:
+#   Platform:  University of Twente CRIB computing platform
+#   Hardware:  72 vCPUs, Intel x86-64, 768 GB RAM, NVIDIA RTX A4000 GPU
+#   Python:    3.8.10
+#   Access:    JupyterLab via browser (no local conda environment)
+#
+# Note on versions:
+#   Exact package versions were not recorded at time of execution. The
+#   packages below reflect all libraries used across the research notebooks.
+#   To reproduce the environment, install these packages via pip:
+#
+#     pip install -r requirements.txt
+#
+#   For geospatial packages (geopandas, rasterio, shapely, fiona) it is
+#   recommended to install via conda-forge if using a local conda environment,
+#   as pip installation can cause dependency conflicts on some systems.
+#
+# External tools (not pip-installable):
+#   PDAL      — point cloud processing (DTM/DSM generation)
+#              install via OSGeo4W (Windows) or conda-forge
+#   GDAL CLI  — gdalbuildvrt, gdal_translate, gdalwarp, gdal_calc
+#              install via OSGeo4W (Windows) or conda-forge
+#   QGIS      — manual crown polygon refinement and visualisation
+#              https://qgis.org
+# =============================================================================
+
+# Geospatial
+geopandas
+rasterio
+shapely
+fiona
+pyproj
+
+# Scientific computing
+numpy
+pandas
+scipy
+
+# Machine learning
+scikit-learn
+
+# Deep learning
+torch
+torchvision
+
+# YOLO training and inference
+ultralytics
+
+# LiDAR-based crown delineation
+# Install from source: https://github.com/manaakiwhenua/pycrown
+pycrown
+
+# Explainability
+shap
+
+# Visualisation
+matplotlib
+seaborn
+
+# Notebook environment
+jupyterlab
+ipython
