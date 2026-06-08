@@ -1,0 +1,13 @@
+path: /data/shared/MSc-Klaudia-Olimpia-Herl/ai_allergenic_tree_species_mapping/data/processed/splits_rgb
+train: train/images
+val: val/images
+test: test/images
+
+nc: 5
+
+names:
+    0: Alnus
+    1: Betula
+    2: Fraxinus
+    3: Platanus
+    4: Quercus
