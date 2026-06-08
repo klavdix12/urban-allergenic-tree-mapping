@@ -68,8 +68,7 @@ Source code repository (GitHub):
 Links to third-party data sources referenced in this research:
   - AHN4 LiDAR data:           https://geotiles.citg.tudelft.nl/ (public, CC0)
   - Aerial imagery (RGB/CIR):  https://geotiles.citg.tudelft.nl/ (public, open)
-  - PDOK administrative bounds: https://www.pdok.nl/introductie/-/article/
-    administratieve-eenheden-inspire-geharmoniseerd- (public, CC0)
+  - PDOK administrative bounds: https://www.pdok.nl (public, CC0)
   - Municipal tree inventory:   via 4TU.HERITAGE project /
                                  Municipality of Enschede / Cobra Groeninzicht
   - Crown polygon shapefile:    via 4TU.HERITAGE project
@@ -80,26 +79,43 @@ Links to third-party data sources referenced in this research:
 ARCHIVE CONTENTS
 ===================================================================================
 
-  Herl_s3482170/
-    configs/                   YOLO data configuration YAML files
+  configs/                   YOLO data configuration YAML files
     data/
       raw/                     Empty folders + README (raw data not included)
       interim/                 Intermediate shapefiles (PyCrown output, GT prep)
       processed/               Processed datasets (splits, RF features, predictions)
       external/                Empty folders + README (third-party data not included)
-    models/                    Trained YOLO model weights (weights in .pt format, and 
-                               validation metrics charts/figures)
+    models/
+      yolov11_detection/
+        rgb/                   weights/, results.csv, metric plots, args.yaml
+        irrg/                  same structure as rgb/
+      yolov11_segmentation/
+        rgb/                   weights/, results.csv, metric plots, args.yaml
+        irrg/                  same structure as rgb/
+      random_forest/           trained RF model weights (.pkl files)
     notebooks/
-      random_forest/           RF pipeline notebooks
-      yolo_detection/          YOLO object detection notebooks
-      yolo_segmentation/       YOLO instance segmentation notebooks
-      visualization/           YOLO dataset visualization (samples count per split)
+      random_forest/
+        preprocessing/         pycrown_crown_segmentation, crown_species_labelling,
+                               crown_feature_extraction
+        binary_classification/ rf_binary_fc1, rf_binary_fc2
+        multi_class_classification/ rf_multiclass_fc1, rf_multiclass_fc2
+        prediction_validation/ campus_prediction_validation
+        lcz_analysis/          lcz_species_analysis
+      yolo_detection/
+        preprocessing/         yolo_detection_gt_prep, rgb_tiles_prep, irrg_tiles_prep
+        rgb/                   YOLOv11s_rgb training and evaluation notebook
+        irrg/                  YOLOv11s_irrg training and evaluation notebook
+      yolo_segmentation/
+        preprocessing/         yolo_segmentation_gt_prep, rgb_tiles_prep, irrg_tiles_prep
+        rgb/                   YOLOv11s-seg_rgb training and evaluation notebook
+        irrg/                  YOLOv11s-seg_irrg training and evaluation notebook
+      yolo_visualisation.ipynb Universal YOLO dataset visualisation notebook
     scripts/
-      lidar_processing/        PDAL pipelines (.json) and CHM batch script (.bat)
+      lidar_preprocessing/        PDAL pipelines (.json) and CHM batch script (.bat)
     src/                       Shared Python path utilities
     thesis_pdf/                Final MSc thesis (PDF)
     README.txt                 This file
-    requirements.yaml          Environment specification
+    requirements.txt           Python dependencies
 
 
 configs/
@@ -135,6 +151,24 @@ models/
     rgb/ and irrg/ — same structure as yolov11_detection/ above, with
     additional MaskF1, MaskP, MaskPR, MaskR curve files for segmentation masks.
 
+  random_forest/
+    RF_BinaryClassifier_FeatureConfigI_v01.pkl
+      Binary RF classifier (FC1). Classifies crowns as allergenic vs non-allergenic.
+      Features: R/G/B/NIR mean+std, CHM mean/std/max, crown area. No NDVI.
+
+    RF_BinaryClassifier_FeatureConfigII_v01.pkl
+      Binary RF classifier (FC2). Same as FC1 plus NDVI mean and std.
+
+    RF_MulticlassClassifier_FeatureConfigI_v01.pkl
+      Multi-class RF classifier (FC1). Classifies 5 allergenic species.
+      No NDVI; original class distribution (Quercus dominant).
+      Class encoding: 0=Betula, 1=Alnus, 2=Fraxinus, 3=Quercus, 4=Platanus
+
+    RF_MulticlassClassifier_FeatureConfigII_v01.pkl
+      Multi-class RF classifier (FC2). NDVI features; Quercus downsampled to 600.
+      Used for campus validation and LCZ analysis.
+
+  Load RF models:   import pickle; model = pickle.load(open('filename.pkl', 'rb'))
   Load YOLO models: from ultralytics import YOLO; model = YOLO('best.pt')
 
 notebooks/
@@ -197,11 +231,11 @@ notebooks/
         Outputs: splits_irrg/ (train/val/test — images/ and labels/)
 
     rgb/
-      yolo_detection_rgb.ipynb
+      YOLOv11s_rgb.ipynb
         Trains, validates, and evaluates the RGB object detection model.
 
     irrg/
-      yolo_detection_irrg.ipynb
+      YOLOv11s_irrg.ipynb
         Trains, validates, and evaluates the IRRG object detection model.
 
   yolo_segmentation/
@@ -218,23 +252,22 @@ notebooks/
         Outputs: splits_irrg_seg/ (train/val/test — images/ and labels/)
 
     rgb/
-      yolo_segmentation_rgb.ipynb
+      YOLOv11s-seg_rgb.ipynb
         Trains, validates, evaluates the RGB segmentation model, and exports
         predictions as GeoJSON.
 
     irrg/
-      yolo_segmentation_irrg.ipynb
+      YOLOv11s-seg_irrg.ipynb
         Trains, validates, evaluates the IRRG segmentation model, and exports
         predictions as GeoJSON.
 
-  visualization/
-    yolo_dataset_visualisation.ipynb
-      Universal visualisation notebook for all four YOLO datasets.
-      Set SPLITS_DIR, TASK, and CLASS_NAMES at the top; works for detection
-      and segmentation, RGB and IRRG.
+  yolo_visualisation.ipynb
+    Universal visualisation notebook for all four YOLO datasets.
+    Set SPLITS_DIR, TASK, and CLASS_NAMES at the top; works for detection
+    and segmentation, RGB and IRRG.
 
 scripts/
-  lidar_processing/
+  lidar_preprocessing/
     pdal_dsm_max.json    PDAL pipeline — DSM, max return, 0.5 m (chosen)
     pdal_dsm_idw.json    PDAL pipeline — DSM, IDW interpolation, 0.5 m (tested)
     pdal_dtm_idw.json    PDAL pipeline — DTM, IDW interpolation, 0.5 m (chosen)
@@ -290,8 +323,7 @@ LCZ classification raster (lcz_v3.tif):
 
 PDOK administrative boundary (Enschede):
   Source:      PDOK (Publieke Dienstverlening Op de Kaart)
-  URL:         https://www.pdok.nl/introductie/-/article/
-               administratieve-eenheden-inspire-geharmoniseerd- 
+  URL:         https://www.pdok.nl
   License:     CC0
   Reason:      Publicly available
 
@@ -325,9 +357,10 @@ Overview:
     SHAP analysis for feature importance interpretation.
 
   Validation:
-    (a) Campus validation: spatial intersection with UT campus inventory
+    (a) Public test set: tile 35AN1 withheld from training
+    (b) Campus validation: spatial intersection with UT campus inventory
         (n=410 matched crowns)
-    (b) Field validation: visual and PictureThis-assisted species identification
+    (c) Field validation: visual and PictureThis-assisted species identification
         for unmatched crown predictions on campus
 
 LiDAR preprocessing:
@@ -362,7 +395,7 @@ Key software:
   pycrown        LiDAR-based tree crown delineation
   gdal           CHM merging, alignment, and computation
   qgis           Manual crown polygon refinement and visualisation
-  Full dependency list: requirements.yaml
+  Full dependency list: requirements.txt
 
 Spatial reference system:
   All spatial data: RD New (EPSG:28992)
@@ -372,8 +405,7 @@ Quality assurance:
   - Crown polygons manually reviewed and refined in QGIS
   - Invalid geometries and duplicates removed from all shapefiles
   - Species names standardised to genus level
-  - Class imbalance addressed via Quercus downsampling in YOLO object detection 
-    and Random Forest FC2
+  - Class imbalance addressed via Quercus downsampling in RF FC2
 
 People involved:
   Data collection and processing: Klaudia Olimpia Herl (MSc student)
@@ -382,6 +414,15 @@ People involved:
 ===================================================================================
 DATA-SPECIFIC INFORMATION
 ===================================================================================
+
+--- RF Model Files (.pkl) ---
+
+Format:    Python pickle, scikit-learn RandomForestClassifier
+Load:      import pickle; model = pickle.load(open('filename.pkl', 'rb'))
+Input:     Feature array matching columns in tree_features_rf.shp
+           (excluding id, species_na, is_allerge, species_id, geometry)
+Output:    Class prediction array and probability array
+Note:      Must be loaded with the same scikit-learn version used for training.
 
 --- YOLO Model Files (.pt) ---
 

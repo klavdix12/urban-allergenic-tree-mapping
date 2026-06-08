@@ -34,7 +34,6 @@ The two-step LiDAR + Random Forest workflow substantially outperformed the one-s
 ## Repository Structure
 
 ```
-Herl_s3482170/
 ├── configs/                          # YOLO data configuration YAML files
 ├── data/
 │   ├── raw/                          # Raw input data (not included — see Data section)
@@ -49,7 +48,7 @@ Herl_s3482170/
 │   ├── yolo_detection/               # YOLO detection pipeline
 │   └── yolo_segmentation/            # YOLO segmentation pipeline
 ├── scripts/
-│   └── lidar_processing/             # PDAL pipelines (.json) + CHM batch script (.bat)
+│   └── lidar_preprocessing/             # PDAL pipelines (.json) + CHM batch script (.bat)
 ├── src/                              # Shared path utilities
 ├── docs/                             # Figures and diagrams
 ├── .gitignore
@@ -104,7 +103,7 @@ pip install -r requirements.txt
 ### LiDAR preprocessing — run once before anything else
 
 ```
-scripts/lidar_processing/
+scripts/lidar_preprocessing/
   1. pdal_dtm_idw.json          → generate DTM tiles from AHN4 point cloud
   2. pdal_dsm_max.json          → generate DSM from AHN4 point cloud
   3. chm_creation.bat           → merge DTM tiles, align extents, compute CHM
