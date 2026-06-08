@@ -5,6 +5,7 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/)
 [![Ultralytics YOLOv11](https://img.shields.io/badge/YOLO-v11-green.svg)](https://github.com/ultralytics/ultralytics)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange.svg)](https://scikit-learn.org/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20600808.svg)](https://doi.org/10.5281/zenodo.20600808)
 
 > MSc Spatial Engineering thesis — Faculty of Geo-Information Science and Earth Observation (ITC), University of Twente, 2025–2026
 
@@ -234,6 +235,8 @@ model = YOLO('path/to/best.pt')
 Herl, K.O. (2026). Artificial Intelligence for Allergenic Tree Species Mapping
 in Urban Environments: A Case Study of Enschede. MSc thesis, Faculty of
 Geo-Information Science and Earth Observation (ITC), University of Twente.
+
+Source code: https://doi.org/10.5281/zenodo.20600808
 ```
 
 ---
